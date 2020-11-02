@@ -22,28 +22,38 @@ let main argv =
         strip.show()
         time.sleep(wait_ms / 1000.0) *)
 
+    strip.Begin()
+
+    let np = strip.GetNumberOfPixels()
+    printfn "Number of pixels %d" np
+
     let wipe col = 
         for i in 0..strip.GetNumberOfPixels() do
             strip.SetPixelColor(i, col)
             strip.Show()
             Threading.Thread.Sleep(50)
 
-    let rec mainLoop() = 
-
-        wipe Color.Red
-        wipe Color.Blue
-        wipe Color.Green
-
-        if Console.KeyAvailable then
-            match Console.ReadKey().Key with
-            | ConsoleKey.Q -> ()
-            | _ -> mainLoop()
-        else
-            mainLoop()
+    //let rec mainLoop() = 
 
     Colorful.Console.WriteLine("Running, press Q to quit!", Color.Blue)
 
-    mainLoop()
+    wipe Color.Red
+    wipe Color.Blue
+    wipe Color.Green
+
+        // if Console.KeyAvailable then
+        //     match Console.ReadKey().Key with
+        //     | ConsoleKey.Q -> ()
+        //     | _ -> mainLoop()
+        // else
+        //     mainLoop()
+
+
+    //mainLoop()
+
+    Colorful.Console.WriteLine("Press any key to end!", Color.Blue)
+
+    Console.ReadKey |> ignore
 
     Colorful.Console.WriteLine("Ending SnowPi!", Color.Blue)
     0 // return an integer exit code
