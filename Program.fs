@@ -4,5 +4,5 @@ open System
 
 [<EntryPoint>]
 let main argv =
-    printfn "Hello World from F#!"
+    Colorful.Console.WriteLine("Hello World from F#!", Drawing.Color.Pink)
     0 // return an integer exit code
