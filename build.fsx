@@ -8,12 +8,15 @@ nuget Fake.DotNet.Paket //"
 open Fake.Core
 open Fake.DotNet
 
+[<Literal>]
+let ProjectFile = "snowpi.fsproj"
+
 // *** Define Targets ***
 Target.create "Clean" (fun _ ->
   Trace.log " --- Cleaning stuff --- "
 )
 
-Target.create "Paket Restore" (fun _ ->
+Target.create "Restore" (fun _ ->
   
   Trace.log " --- Paket Restore --- "
 
@@ -23,18 +26,24 @@ Target.create "Paket Restore" (fun _ ->
 Target.create "Build" (fun _ ->
   Trace.log " --- Building the app --- "
 
-  DotNet.build id "snowpi.fsproj"
+  DotNet.build id ProjectFile
 )
 
 Target.create "Deploy" (fun _ ->
   Trace.log " --- Deploying app --- "
+
+  DotNet.publish (fun args -> 
+    { args with
+       OutputPath = Some "publish"
+       Runtime = Some "linux-arm"
+       SelfContained = Some true }) ProjectFile
 )
 
 open Fake.Core.TargetOperators
 
 // *** Define Dependencies ***
 "Clean"
-  ==> "Paket Restore"
+  ==> "Restore"
   ==> "Build"
   ==> "Deploy"
 
