@@ -4,3 +4,4 @@ publish/
 .ionide/
 .paket/
 paket-files/
+.fake
