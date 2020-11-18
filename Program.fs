@@ -48,4 +48,33 @@ let main argv =
         display allOff
         sleep 500
 
+    let red = 
+        [ LeftEye; RightEye; Nose]
+        |> createLedsOn Color.Red
+
+    let amber = 
+        [ TopLeft; TopMiddle; TopRight; MiddleMiddle ]
+        |> createLedsOn Color.Orange
+
+    let green = 
+        [ MiddleLeft; BottomLeft; BottomMiddle; MiddleRight; BottomRight ]
+        |> createLedsOn Color.Green
+
+    let redAmber = 
+        List.append red amber
+
+    display green
+    sleep 3000
+    display amber 
+    sleep 1000
+    display red
+    sleep 3000
+    display redAmber
+    sleep 1000
+    display green
+    sleep 1000
+    display allOff
+
+    //BUG: Console colors are changed after running all the above traffic lights.
+
     0

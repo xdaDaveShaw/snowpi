@@ -29,13 +29,21 @@ type LED = {
     State : State
 }
 
+let createLeds state positions = 
+    positions
+    |> List.map (fun pos -> { Position = pos; State = state; })
+
+let createLedsOn color positions = 
+    positions
+    |> List.map (fun pos -> { Position = pos; State = On color; })
+
 let createAll state = 
     Position.All
-    |> List.map (fun pos -> { Position = pos; State = state })
+    |> createLeds state
 
 let createAllOn color = 
     Position.All
-    |> List.map (fun pos -> { Position = pos; State = On color })
+    |> createLedsOn color
 
 let allOff =
     createAll Off
