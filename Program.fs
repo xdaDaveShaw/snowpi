@@ -31,5 +31,6 @@ let main argv =
     run [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; ] true
     System.Threading.Thread.Sleep(1000)
     run [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; bottomMiddle; ] true
+    System.Threading.Thread.Sleep(1000)
 
     0

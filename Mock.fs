@@ -70,31 +70,31 @@ let snowManHeight =
         |> Seq.length
     lineCount + 2 //One for the first and one for the last line
 
+[<Literal>]
+let NumberOfPixels = 12
+
 let run (leds : LED list) redraw = 
 
-    let toFormat led = 
-        match led.State with
-        | On c -> Formatter("X", c)
-        | Off -> Formatter(" ", Color.Black)
+    let on col = Formatter("X", col)
+    let off = Formatter(" ", Color.Black)
 
-    let getOnLed i off =
-        let setLed = 
-            leds
-            |> List.choose (fun led -> 
-                if (posToLedNumber led.Position) = i then
-                    Some (toFormat led)
-                else
-                    None)
-            |> List.tryExactlyOne
-        match setLed with
-        | Some led -> led
-        | None -> off
+    let tryCreateFormatterForLed { State = state} = 
+        match state with
+        | On col -> on col |> Some
+        | Off -> None
+
+    let tryGetLedByLedNumber ledNumber = 
+        leds
+        |> List.tryFind (fun led -> posToLedNumber led.Position = ledNumber)
+
+    let getFormatterForLedNumber ledNumber =
+        tryGetLedByLedNumber ledNumber
+        |> Option.bind tryCreateFormatterForLed
+        |> Option.defaultValue off
 
     let format =
-        Formatter(" ", Color.Black)
-        |> List.replicate 12
-        |> List.mapi getOnLed
-        |> List.toArray
+        [| 0..NumberOfPixels - 1 |]
+        |> Array.map getFormatterForLedNumber
 
     if redraw then
         Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - snowManHeight)
