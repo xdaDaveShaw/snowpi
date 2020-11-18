@@ -31,6 +31,10 @@ type LED = {
     State : State
 }
 
+let createAll state = 
+    Position.All
+    |> List.map (fun pos -> { Position = pos; State = state })
+
 let posToLedNumber = function
     | BottomLeft -> 0
     | MiddleLeft -> 1
