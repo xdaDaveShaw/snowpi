@@ -5,18 +5,22 @@ open System
 open System.Drawing
 
 type Position =
-| BottomLeft
-| MiddleLeft
-| TopLeft
-| BottomRight
-| MiddleRight
-| TopRight
-| Nose
-| LeftEye
-| RightEye
-| BottomMiddle
-| MiddleMiddle
-| TopMiddle
+    | BottomLeft
+    | MiddleLeft
+    | TopLeft
+    | BottomRight
+    | MiddleRight
+    | TopRight
+    | Nose
+    | LeftEye
+    | RightEye
+    | BottomMiddle
+    | MiddleMiddle
+    | TopMiddle
+    static member All = 
+        Reflection.FSharpType.GetUnionCases(typeof<Position>)
+        |> Seq.map (fun u -> Reflection.FSharpValue.MakeUnion(u, Array.empty) :?> Position)
+        |> Seq.toList
 
 type State = 
 | Off

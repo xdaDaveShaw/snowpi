@@ -33,4 +33,13 @@ let main argv =
     run [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; bottomMiddle; ] true
     System.Threading.Thread.Sleep(1000)
 
+    let allOn = Position.All |> List.map (fun pos -> { Position = pos; State = On Color.Yellow; })
+    let allOff = Position.All |> List.map (fun pos -> { Position = pos; State = Off; })
+
+    for _ in 1..5 do
+        run allOn true
+        System.Threading.Thread.Sleep(500)
+        run allOff true
+        System.Threading.Thread.Sleep(500)
+
     0
