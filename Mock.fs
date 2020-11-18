@@ -1,6 +1,7 @@
 module Mock
 
 open Colorful
+open System
 open System.Drawing
 
 type Position =
@@ -40,7 +41,36 @@ let posToLedNumber = function
     | MiddleMiddle -> 10
     | TopMiddle -> 11
 
-let run (leds : LED list) = 
+[<Literal>]
+let SnowmanFormatString = """
+    
+    ###############
+     #############
+      ###########
+       #########
+   #################
+     /           \
+    /  [{7}]   [{8}]  \
+   |               |
+    \     [{6}]     /
+     \           /
+     /           \
+    /     [{11}]     \
+   / [{2}]       [{5}] \
+  /       [{10}]       \
+ |  [{1}]         [{4}]  |
+  \       [{9}]       /
+   \[{0}]         [{3}]/
+    \_____________/
+"""
+
+let snowManHeight = 
+    let lineCount = 
+        SnowmanFormatString.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+        |> Seq.length
+    lineCount + 2 //One for the first and one for the last line
+
+let run (leds : LED list) redraw = 
 
     let toFormat led = 
         match led.State with
@@ -66,26 +96,7 @@ let run (leds : LED list) =
         |> List.mapi getOnLed
         |> List.toArray
 
+    if redraw then
+        Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - snowManHeight)
 
-    Console.WriteLineFormatted("""
-    
-    ###############
-     #############
-      ###########
-       #########
-   #################
-     /           \
-    /  [{7}]   [{8}]  \
-   |               |
-    \     [{6}]     /
-     \           /
-     /           \
-    /     [{11}]     \
-   / [{2}]       [{5}] \
-  /       [{10}]       \
- |  [{1}]         [{4}]  |
-  \       [{9}]       /
-   \[{0}]         [{3}]/
-    \_____________/
-
-    """, Color.White, format)
+    Console.WriteLineFormatted(SnowmanFormatString, Color.White, format)

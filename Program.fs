@@ -16,8 +16,20 @@ let main argv =
           State = On Color.LimeGreen }
     let topMiddle = 
         { Position = TopMiddle
-          State = Off }
+          State = On Color.Blue }
+    let midMiddle = 
+        { Position = MiddleMiddle
+          State = On Color.Blue }
+    let bottomMiddle = 
+        { Position = BottomMiddle
+          State = On Color.Blue }
 
-    Mock.run [redNose; greenEyeL; greenEyeR; topMiddle]
+    run [ redNose; greenEyeL; greenEyeR ] false
+    System.Threading.Thread.Sleep(1000)
+    run [ redNose; greenEyeL; greenEyeR; topMiddle ] true
+    System.Threading.Thread.Sleep(1000)
+    run [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; ] true
+    System.Threading.Thread.Sleep(1000)
+    run [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; bottomMiddle; ] true
 
     0
