@@ -1,6 +1,13 @@
 ﻿open System.Drawing
 
-open Mock
+open LEDs
+
+let sleep (ms : int) =
+    System.Threading.Thread.Sleep(ms)
+
+let display leds = 
+    [ Mock.display ]
+    |> List.iter (fun f -> f leds)
 
 [<EntryPoint>]
 let main argv =
@@ -24,22 +31,21 @@ let main argv =
         { Position = BottomMiddle
           State = On Color.Blue }
 
-    run [ redNose; greenEyeL; greenEyeR ] false
-    System.Threading.Thread.Sleep(1000)
-    run [ redNose; greenEyeL; greenEyeR; topMiddle ] true
-    System.Threading.Thread.Sleep(1000)
-    run [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; ] true
-    System.Threading.Thread.Sleep(1000)
-    run [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; bottomMiddle; ] true
-    System.Threading.Thread.Sleep(1000)
+    display [ redNose; greenEyeL; greenEyeR ]
+    sleep 1000
+    display [ redNose; greenEyeL; greenEyeR; topMiddle ]
+    sleep 1000
+    display [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; ]
+    sleep 1000
+    display [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; bottomMiddle; ]
+    sleep 1000
 
-    let allOn = createAll (On Color.Yellow)
-    let allOff = createAll Off
-
+    let allPink = createAllOn Color.HotPink
+    
     for _ in 1..5 do
-        run allOn true
-        System.Threading.Thread.Sleep(500)
-        run allOff true
-        System.Threading.Thread.Sleep(500)
+        display allPink
+        sleep 500
+        display allOff
+        sleep 500
 
     0

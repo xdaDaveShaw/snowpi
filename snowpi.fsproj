@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="LEDs.fs" />
     <Compile Include="Real.fs" />
     <Compile Include="Mock.fs" />
     <Compile Include="Program.fs" />

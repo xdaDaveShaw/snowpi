@@ -4,50 +4,7 @@ open Colorful
 open System
 open System.Drawing
 
-type Position =
-    | BottomLeft
-    | MiddleLeft
-    | TopLeft
-    | BottomRight
-    | MiddleRight
-    | TopRight
-    | Nose
-    | LeftEye
-    | RightEye
-    | BottomMiddle
-    | MiddleMiddle
-    | TopMiddle
-    static member All = 
-        Reflection.FSharpType.GetUnionCases(typeof<Position>)
-        |> Seq.map (fun u -> Reflection.FSharpValue.MakeUnion(u, Array.empty) :?> Position)
-        |> Seq.toList
-
-type State = 
-| Off
-| On of Color
-
-type LED = {
-    Position: Position
-    State : State
-}
-
-let createAll state = 
-    Position.All
-    |> List.map (fun pos -> { Position = pos; State = state })
-
-let posToLedNumber = function
-    | BottomLeft -> 0
-    | MiddleLeft -> 1
-    | TopLeft -> 2
-    | BottomRight -> 3
-    | MiddleRight -> 4
-    | TopRight -> 5
-    | Nose -> 6
-    | LeftEye -> 7
-    | RightEye -> 8
-    | BottomMiddle -> 9
-    | MiddleMiddle -> 10
-    | TopMiddle -> 11
+open LEDs
 
 [<Literal>]
 let SnowmanFormatString = """
@@ -78,33 +35,34 @@ let snowManHeight =
         |> Seq.length
     lineCount + 2 //One for the first and one for the last line
 
-[<Literal>]
-let NumberOfPixels = 12
+// Lives in this module as it is only needed for mocks, there is no concept of
+// redrawing on the Real SnowPi
+let mutable private redraw = false
 
-let run (leds : LED list) redraw = 
+let display (leds : LED list) = 
 
     let on col = Formatter("X", col)
     let off = Formatter(" ", Color.Black)
 
-    let tryCreateFormatterForLed { State = state} = 
+    let tryCreateFormatterForLed { State = state } = 
         match state with
         | On col -> on col |> Some
         | Off -> None
 
-    let tryGetLedByLedNumber ledNumber = 
+    let getFormatterForPosition position =
         leds
-        |> List.tryFind (fun led -> posToLedNumber led.Position = ledNumber)
-
-    let getFormatterForLedNumber ledNumber =
-        tryGetLedByLedNumber ledNumber
+        |> List.tryFind (fun led -> led.Position = position)
         |> Option.bind tryCreateFormatterForLed
         |> Option.defaultValue off
 
     let format =
-        [| 0..NumberOfPixels - 1 |]
-        |> Array.map getFormatterForLedNumber
+        Position.All
+        |> Seq.map getFormatterForPosition
+        |> Seq.toArray
 
     if redraw then
         Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - snowManHeight)
+    else 
+        redraw <- true
 
     Console.WriteLineFormatted(SnowmanFormatString, Color.White, format)
