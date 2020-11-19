@@ -75,6 +75,10 @@ let main argv =
     sleep 1000
     display allOff
 
+    //TODO: Implement and test "Real"
+    //TODO: Change to "Commands"
+    //TODO: Allow HTTP driven control
+    //TODO: Cli switches
     //BUG: Console colors are changed after running all the above traffic lights.
 
     0
