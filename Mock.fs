@@ -29,11 +29,17 @@ let SnowmanFormatString = """
     \_____________/
 """
 
+let extraLines = 
+    if Runtime.InteropServices.RuntimeInformation.IsOSPlatform(Runtime.InteropServices.OSPlatform.Windows) then
+        2 //One for the first and one for the last line
+    else
+        1
+
 let snowManHeight = 
     let lineCount = 
         SnowmanFormatString.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
         |> Seq.length
-    lineCount + 2 //One for the first and one for the last line
+    lineCount + extraLines
 
 // Lives in this module as it is only needed for mocks, there is no concept of
 // redrawing on the Real SnowPi
