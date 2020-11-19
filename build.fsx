@@ -8,6 +8,17 @@ nuget Fake.DotNet.Paket //"
 open Fake.Core
 open Fake.DotNet
 
+let SshKeyFile = 
+  System.IO.Path.Combine(
+    System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), 
+    ".ssh", 
+    "pi_rsa")
+
+[<Literal>]
+let PiLogin = "pi@raspberrypi"
+[<Literal>]
+let SnowPiOnPi = "/home/pi/snowpi"
+
 [<Literal>]
 let ProjectFile = "snowpi.fsproj"
 
@@ -29,8 +40,8 @@ Target.create "Build" (fun _ ->
   DotNet.build id ProjectFile
 )
 
-Target.create "Deploy" (fun _ ->
-  Trace.log " --- Deploying app --- "
+Target.create "Publish" (fun _ ->
+  Trace.log " --- Publishing app --- "
 
   DotNet.publish (fun args -> 
     { args with
@@ -39,12 +50,38 @@ Target.create "Deploy" (fun _ ->
        SelfContained = Some true }) ProjectFile
 )
 
+Target.create "Deploy" (fun _ ->
+  Trace.log " --- Deploying app --- "
+
+  CreateProcess.fromRawCommand 
+    "scp.exe" 
+    [ "-rp"
+      "-i"
+      SshKeyFile
+      "publish"
+      PiLogin + ":" + SnowPiOnPi ]
+  |> Proc.run
+  |> ignore
+  
+  Trace.log " --- Making app executable --- "
+
+  CreateProcess.fromRawCommand
+    "ssh.exe"
+    [ "-i"
+      SshKeyFile
+      PiLogin
+      "chmod +x " + SnowPiOnPi + "/publish/snowpi" ]
+  |> Proc.run
+  |> ignore
+)
+
 open Fake.Core.TargetOperators
 
 // *** Define Dependencies ***
 "Clean"
   ==> "Restore"
   ==> "Build"
+  ==> "Publish"
   ==> "Deploy"
 
 // *** Start Build ***

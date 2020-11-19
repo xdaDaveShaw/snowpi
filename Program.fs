@@ -75,7 +75,6 @@ let main argv =
     sleep 1000
     display allOff
 
-    //TODO: Auto Deploy to PI
     //TODO: Change to "Commands"
     //TODO: Test "Real" with examples
     //TODO: Allow HTTP driven control
