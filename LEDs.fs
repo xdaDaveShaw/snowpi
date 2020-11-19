@@ -33,9 +33,12 @@ let createPixels state positions =
     positions
     |> List.map (fun pos -> { Position = pos; State = state; })
 
+let createPixelOn color pos =
+    { Position = pos; State = On color; }
+
 let createPixelsOn color positions = 
     positions
-    |> List.map (fun pos -> { Position = pos; State = On color; })
+    |> List.map (fun pos -> createPixelOn color pos)
 
 let createAll state = 
     Position.All

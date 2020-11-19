@@ -4,13 +4,19 @@ open LEDs
 open rpi_ws281x
 
 let settings = Settings.CreateDefaultSettings();
-let controller = settings.AddController(ControllerType.PWM0, 12, StripType.Unknown, 100uy, false)
+let controller = 
+    settings.AddController(
+        ControllerType.PWM0, 
+        12, 
+        StripType.Unknown, 
+        100uy, 
+        false)
 
-let disply (pixels : Pixel list) =
+let rpi = new WS281x(settings)
+controller.Reset();
 
-    use rpi = new WS281x(settings)
-    controller.Reset();
-   
+let display (pixels : Pixel list) =
+    
     let toLedTuple pixel =
         match pixel.State with
         | On color -> Some (pixel.Position |> posToLedNumber, color)
