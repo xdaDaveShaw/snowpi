@@ -5,9 +5,9 @@ open LEDs
 let sleep (ms : int) =
     System.Threading.Thread.Sleep(ms)
 
-let display leds = 
-    [ Mock.display ]
-    |> List.iter (fun f -> f leds)
+let display pixels = 
+    [ Mock.display; Real.disply ]
+    |> List.iter (fun f -> f pixels)
 
 [<EntryPoint>]
 let main argv =
@@ -50,15 +50,15 @@ let main argv =
 
     let red = 
         [ LeftEye; RightEye; Nose]
-        |> createLedsOn Color.Red
+        |> createPixelsOn Color.Red
 
     let amber = 
         [ TopLeft; TopMiddle; TopRight; MiddleMiddle ]
-        |> createLedsOn Color.Orange
+        |> createPixelsOn Color.Orange
 
     let green = 
         [ MiddleLeft; BottomLeft; BottomMiddle; MiddleRight; BottomRight ]
-        |> createLedsOn Color.Green
+        |> createPixelsOn Color.Green
 
     let redAmber = 
         List.append red amber
@@ -75,8 +75,9 @@ let main argv =
     sleep 1000
     display allOff
 
-    //TODO: Implement and test "Real"
+    //TODO: Auto Deploy to PI
     //TODO: Change to "Commands"
+    //TODO: Test "Real" with examples
     //TODO: Allow HTTP driven control
     //TODO: Cli switches
     //TODO: .NET 5 / Single Exe?

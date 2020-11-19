@@ -45,20 +45,20 @@ let snowManHeight =
 // redrawing on the Real SnowPi
 let mutable private redraw = false
 
-let display (leds : LED list) = 
+let display (pixels : Pixel list) = 
 
     let on col = Formatter("X", col)
     let off = Formatter(" ", Color.Black)
 
-    let tryCreateFormatterForLed { State = state } = 
+    let tryCreateFormatterForPixel { State = state } = 
         match state with
         | On col -> on col |> Some
         | Off -> None
 
     let getFormatterForPosition position =
-        leds
-        |> List.tryFind (fun led -> led.Position = position)
-        |> Option.bind tryCreateFormatterForLed
+        pixels
+        |> List.tryFind (fun pixel -> pixel.Position = position)
+        |> Option.bind tryCreateFormatterForPixel
         |> Option.defaultValue off
 
     let format =

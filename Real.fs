@@ -1,31 +1,23 @@
 module Real
 
-open System
-open System.Drawing
+open LEDs
 open rpi_ws281x
 
+let settings = Settings.CreateDefaultSettings();
+let controller = settings.AddController(ControllerType.PWM0, 12, StripType.Unknown, 100uy, false)
 
-let run() =
-    let settings = Settings.CreateDefaultSettings();
-
-    let controller = settings.AddController(ControllerType.PWM0, 12, StripType.Unknown, 100uy, false)
+let disply (pixels : Pixel list) =
 
     use rpi = new WS281x(settings)
-    
-    Console.WriteLine("Running...");
-
     controller.Reset();
-    controller.SetAll(Color.Red);
+   
+    let toLedTuple pixel =
+        match pixel.State with
+        | On color -> Some (pixel.Position |> posToLedNumber, color)
+        | Off -> None
+
+    pixels
+    |> List.choose toLedTuple
+    |> List.iter controller.SetLED
+
     rpi.Render();
-
-    Console.WriteLine("Render 1...");
-    Console.ReadLine() |> ignore;
-    
-    rpi.Reset();
-
-    Console.WriteLine("Reset 1...");
-    Console.ReadLine() |> ignore;
-
-    rpi.Render();
-    Console.WriteLine("Render 2...");
-    Console.ReadLine() |> ignore;

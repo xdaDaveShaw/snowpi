@@ -24,26 +24,26 @@ type State =
     | Off
     | On of Color
 
-type LED = {
+type Pixel = {
     Position: Position
     State : State
 }
 
-let createLeds state positions = 
+let createPixels state positions = 
     positions
     |> List.map (fun pos -> { Position = pos; State = state; })
 
-let createLedsOn color positions = 
+let createPixelsOn color positions = 
     positions
     |> List.map (fun pos -> { Position = pos; State = On color; })
 
 let createAll state = 
     Position.All
-    |> createLeds state
+    |> createPixels state
 
 let createAllOn color = 
     Position.All
-    |> createLedsOn color
+    |> createPixelsOn color
 
 let allOff =
     createAll Off
@@ -52,12 +52,12 @@ let posToLedNumber = function
     | BottomLeft -> 0
     | MiddleLeft -> 1
     | TopLeft -> 2
-    | BottomRight -> 3
-    | MiddleRight -> 4
-    | TopRight -> 5
-    | Nose -> 6
-    | LeftEye -> 7
-    | RightEye -> 8
-    | BottomMiddle -> 9
-    | MiddleMiddle -> 10
-    | TopMiddle -> 11
+    | BottomMiddle -> 3
+    | MiddleMiddle -> 4
+    | TopMiddle -> 5
+    | BottomRight -> 6
+    | MiddleRight -> 7
+    | TopRight -> 8
+    | Nose -> 9
+    | RightEye -> 10
+    | LeftEye -> 11
