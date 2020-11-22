@@ -21,7 +21,7 @@ let execute cmds =
 let main argv =
 
     //Warmup Code
-    Mock.setup
+    Mock.setup ()
 
 
     //Programs
@@ -90,33 +90,35 @@ let main argv =
     //     display allOff
     //     sleep 500
 
-    // let red = 
-    //     [ LeftEye; RightEye; Nose]
-    //     |> createPixelsOn Color.Red
+    let red = 
+        [ LeftEye; RightEye; Nose]
+        |> createPixelsOn Color.Red
 
-    // let amber = 
-    //     [ TopLeft; TopMiddle; TopRight; MiddleMiddle ]
-    //     |> createPixelsOn Color.Orange
+    let amber = 
+        [ TopLeft; TopMiddle; TopRight; MiddleMiddle ]
+        |> createPixelsOn Color.Orange
 
-    // let green = 
-    //     [ MiddleLeft; BottomLeft; BottomMiddle; MiddleRight; BottomRight ]
-    //     |> createPixelsOn Color.Green
+    let green = 
+        [ MiddleLeft; BottomLeft; BottomMiddle; MiddleRight; BottomRight ]
+        |> createPixelsOn Color.Green
 
-    // let redAmber = 
-    //     List.append red amber
+    let redAmber = 
+        List.append red amber
 
-    // display green
-    // sleep 3000
-    // display amber 
-    // sleep 1000
-    // display red
-    // sleep 3000
-    // display redAmber
-    // sleep 1000
-    // display green
-    // sleep 1000
+    let trafficLights = [
+        SetAndDisplayLeds green
+        Sleep 3000
+        SetAndDisplayLeds amber 
+        Sleep 1000
+        SetAndDisplayLeds red
+        Sleep 3000
+        SetAndDisplayLeds redAmber
+        Sleep 1000
+        SetAndDisplayLeds green
+        Sleep 1000
+    ]
     
-    //execute allOff
+    execute trafficLights
 
     //TODO: Change to "Commands"
     //TODO: Test "Real" with examples

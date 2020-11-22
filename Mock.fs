@@ -14,25 +14,28 @@ let Snowman = """
        #########
    #################
      /           \
-    /  [X]   [X]  \
+    /  [ ]   [ ]  \
    |               |
-    \     [X]     /
+    \     [ ]     /
      \           /
      /           \
-    /     [X]     \
-   / [X]       [X] \
-  /       [X]       \
- |  [X]         [X]  |
-  \       [X]       /
-   \[X]         [X]/
+    /     [ ]     \
+   / [ ]       [ ] \
+  /       [ ]       \
+ |  [ ]         [ ]  |
+  \       [ ]       /
+   \[ ]         [ ]/
     \_____________/
 """
 
 let mutable private originalPos = (0, 0)
 
-let setup =
+let private drawSnowman () =
     Console.Clear()
     Console.WriteLine(Snowman, Color.White)
+
+let setup () =
+    drawSnowman ()
     originalPos <- Console.CursorLeft, Console.CursorTop
 
 let private mapPosToConsole = function
@@ -49,7 +52,12 @@ let private mapPosToConsole = function
     | RightEye -> 14, 8
     | LeftEye ->  8, 8
 
-let private setLed led =
+let private toRender = ResizeArray<Pixel>()
+
+let setLeds pixels = 
+    toRender.AddRange(pixels)
+
+let private drawLed led =
 
     let character, color = 
         match led.State with
@@ -62,11 +70,21 @@ let private setLed led =
     finally
         Console.SetCursorPosition originalPos
 
-let private executeCmd cmd = 
+let private render () = 
+    drawSnowman ()
+
+    toRender
+    |> Seq.iter drawLed
+
+    toRender.Clear()
+
+let rec private executeCmd cmd = 
     match cmd with
-    | SetLed p -> setLed p
-    | SetLeds ps -> ps |> List.iter setLed
-    | Display -> ()
+    | SetLeds ps -> setLeds ps
+    | Display -> render()
+    | SetAndDisplayLeds ps -> 
+        executeCmd (SetLeds ps)
+        executeCmd Display
     | Sleep ms -> System.Threading.Thread.Sleep(ms)
 
 let execute (cmds : Command list) = 

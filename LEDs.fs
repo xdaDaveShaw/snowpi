@@ -30,10 +30,10 @@ type Pixel = {
 }
 
 type Command = 
-    | SetLed of Pixel
     | SetLeds of Pixel list
-    | Sleep of int
     | Display
+    | SetAndDisplayLeds of Pixel list
+    | Sleep of int
 
 let createPixels state positions = 
     positions
@@ -56,17 +56,3 @@ let createAllOn color =
 
 let allOff =
     createAll Off
-
-let posToLedNumber = function
-    | BottomLeft -> 0
-    | MiddleLeft -> 1
-    | TopLeft -> 2
-    | BottomMiddle -> 3
-    | MiddleMiddle -> 4
-    | TopMiddle -> 5
-    | BottomRight -> 6
-    | MiddleRight -> 7
-    | TopRight -> 8
-    | Nose -> 9
-    | RightEye -> 10
-    | LeftEye -> 11
