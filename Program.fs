@@ -2,24 +2,29 @@
 
 open LEDs
 
+let useReal = false
+let useMock = true
+
 let sleep (ms : int) =
     System.Threading.Thread.Sleep(ms)
 
-let display pixels = 
-    [ Real.display ]
-    |> List.iter (fun f -> f pixels)
+let execute cmds = 
+    [ 
+        // if useReal then
+        //     Real.display
+        if useMock then
+            Mock.execute
+    ]
+    |> List.iter (fun f -> f cmds)
 
 [<EntryPoint>]
 let main argv =
 
-    for _ in [1..5] do
-        for col in [Color.Red; Color.Green; Color.Blue] do
-            Position.All
-            |> List.sortBy posToLedNumber
-            |> List.map (fun pos -> createPixelOn col pos)
-            |> List.iter (fun pix -> 
-                display [pix]
-                sleep 50)
+    //Warmup Code
+    Mock.setup
+
+
+    //Programs
 
     let redNose = 
         { Position = Nose 
@@ -40,14 +45,42 @@ let main argv =
         { Position = BottomMiddle
           State = On Color.Blue }
 
-    display [ redNose; greenEyeL; greenEyeR ]
-    sleep 1000
-    display [ redNose; greenEyeL; greenEyeR; topMiddle ]
-    sleep 1000
-    display [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; ]
-    sleep 1000
-    display [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; bottomMiddle; ]
-    sleep 1000
+    let program1 = [
+        SetLeds [ redNose; greenEyeL; greenEyeR ]
+        Display
+        Sleep 1000
+        SetLeds [ redNose; greenEyeL; greenEyeR; topMiddle ]
+        Display
+        Sleep 1000
+        SetLeds [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; ]
+        Display
+        Sleep 1000
+        SetLeds [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; bottomMiddle; ]
+        Display
+        Sleep 1000
+    ]
+
+    execute program1
+
+    // for _ in [1..5] do
+    //     for col in [Color.Red; Color.Green; Color.Blue] do
+    //         Position.All
+    //         |> List.sortBy posToLedNumber
+    //         |> List.map (fun pos -> createPixelOn col pos)
+    //         |> List.iter (fun pix -> 
+    //             display [pix]
+    //             sleep 50)
+
+    
+
+    // display [ redNose; greenEyeL; greenEyeR ]
+    // sleep 1000
+    // display [ redNose; greenEyeL; greenEyeR; topMiddle ]
+    // sleep 1000
+    // display [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; ]
+    // sleep 1000
+    // display [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; bottomMiddle; ]
+    // sleep 1000
 
     // let allPink = createAllOn Color.HotPink
     
@@ -83,7 +116,7 @@ let main argv =
     // display green
     // sleep 1000
     
-    display allOff
+    //execute allOff
 
     //TODO: Change to "Commands"
     //TODO: Test "Real" with examples

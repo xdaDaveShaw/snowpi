@@ -29,6 +29,12 @@ type Pixel = {
     State : State
 }
 
+type Command = 
+    | SetLed of Pixel
+    | SetLeds of Pixel list
+    | Sleep of int
+    | Display
+
 let createPixels state positions = 
     positions
     |> List.map (fun pos -> { Position = pos; State = state; })
