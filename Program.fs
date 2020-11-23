@@ -118,15 +118,15 @@ let main argv =
                 for i in [0..3..NumberOfLeds-1] do
                     SetLed { Position = ledNumberToPos (i + q); Color = col }
                 Display
-                Sleep 100
+                Sleep 50
                 for i in [0..3..NumberOfLeds-1] do
                     SetLed { Position = ledNumberToPos (i + q); Color = Color.Black }
     ]
     
     let theaterProgram =
-        [ color 127 127 127 //White
-          color 127 0 0     //Red
-          color 0 0 127     //Blue
+        [ Color.White
+          Color.Red
+          Color.Blue
         ]
         |> List.collect (fun col -> theater 10 col)
 
@@ -134,6 +134,7 @@ let main argv =
 
 
     //TODO: Test "Real" with examples
+    //TODO: Clear LED's option
     //TODO: List comprehension examples
     //TODO: Allow HTTP driven control
     //TODO: Cli switches

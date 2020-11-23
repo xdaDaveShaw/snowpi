@@ -9,7 +9,7 @@ let controller =
         ControllerType.PWM0, 
         NumberOfLeds, 
         StripType.Unknown, 
-        100uy, 
+        255uy, 
         false)
 
 let rpi = new WS281x(settings)
