@@ -2,8 +2,8 @@
 
 open LEDs
 
-let useReal = false
-let useMock = true
+let mutable useReal = false
+let mutable useMock = false
 
 let setup () = 
     if useReal then
@@ -25,6 +25,9 @@ let color r g b =
 
 [<EntryPoint>]
 let main argv =
+
+    useReal <- argv |> Array.contains("-r")
+    useMock <- argv |> Array.contains("-m")
 
     //Warmup Code
     setup ()
@@ -73,7 +76,7 @@ let main argv =
 
     let amber = 
         [ TopLeft; TopMiddle; TopRight; MiddleMiddle ]
-        |> createPixels Color.Orange
+        |> createPixels Color.Yellow
 
     let green = 
         [ MiddleLeft; BottomLeft; BottomMiddle; MiddleRight; BottomRight ]
@@ -83,14 +86,19 @@ let main argv =
         List.append red amber
 
     let trafficLights = [
+        Clear
         SetAndDisplayLeds green
         Sleep 3000
+        Clear
         SetAndDisplayLeds amber 
         Sleep 1000
+        Clear
         SetAndDisplayLeds red
         Sleep 3000
+        Clear
         SetAndDisplayLeds redAmber
         Sleep 1000
+        Clear
         SetAndDisplayLeds green
         Sleep 1000
     ]
@@ -132,6 +140,7 @@ let main argv =
 
     execute theaterProgram
 
+    execute [ Clear ]
 
     //TODO: Test "Real" with examples
     //TODO: Clear LED's option

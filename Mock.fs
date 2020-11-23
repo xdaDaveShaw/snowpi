@@ -65,8 +65,7 @@ let private drawLed led =
         Console.SetCursorPosition originalPos
 
 let private render () = 
-    drawSnowman ()
-
+    
     toRender
     |> Seq.iter drawLed
 
@@ -81,6 +80,7 @@ let rec private executeCmd cmd =
         executeCmd (SetLeds ps)
         executeCmd Display
     | Sleep ms -> System.Threading.Thread.Sleep(ms)
+    | Clear -> drawSnowman ()
 
 let execute (cmds : Command list) = 
     cmds

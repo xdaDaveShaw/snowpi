@@ -67,4 +67,5 @@ type Command =
     | Display
     | SetAndDisplayLeds of Pixel list
     | Sleep of int
+    | Clear
 

@@ -2,6 +2,7 @@ module Real
 
 open LEDs
 open rpi_ws281x
+open System.Drawing
 
 let settings = Settings.CreateDefaultSettings();
 let controller = 
@@ -28,15 +29,20 @@ let private setLeds pixels =
 let private render() = 
     rpi.Render();
 
+let private clear () =
+    controller.SetAll(Color.Black)
+    render ()
+
 let rec private executeCmd cmd = 
     match cmd with
     | SetLed p -> setLeds [p]
     | SetLeds ps -> setLeds ps
-    | Display -> render()
+    | Display -> render ()
     | SetAndDisplayLeds ps -> 
         executeCmd (SetLeds ps)
         executeCmd Display
     | Sleep ms -> System.Threading.Thread.Sleep(ms)
+    | Clear -> clear ()
 
 let execute (cmds : Command list) =
     
