@@ -7,7 +7,7 @@ let settings = Settings.CreateDefaultSettings();
 let controller = 
     settings.AddController(
         ControllerType.PWM0, 
-        12, 
+        NumberOfLeds, 
         StripType.Unknown, 
         100uy, 
         false)
@@ -16,20 +16,6 @@ let rpi = new WS281x(settings)
 
 let setup() = 
     controller.Reset();
-
-let private posToLedNumber = function
-    | BottomLeft -> 0
-    | MiddleLeft -> 1
-    | TopLeft -> 2
-    | BottomMiddle -> 3
-    | MiddleMiddle -> 4
-    | TopMiddle -> 5
-    | BottomRight -> 6
-    | MiddleRight -> 7
-    | TopRight -> 8
-    | Nose -> 9
-    | RightEye -> 10
-    | LeftEye -> 11
 
 let private setLeds pixels = 
     let toLedTuple pixel =
@@ -44,6 +30,7 @@ let private render() =
 
 let rec private executeCmd cmd = 
     match cmd with
+    | SetLed p -> setLeds [p]
     | SetLeds ps -> setLeds ps
     | Display -> render()
     | SetAndDisplayLeds ps -> 

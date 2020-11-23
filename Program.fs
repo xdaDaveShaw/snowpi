@@ -20,6 +20,9 @@ let execute cmds =
     ]
     |> List.iter (fun f -> f cmds)
 
+let color r g b = 
+    Color.FromArgb(r, g, b)
+
 [<EntryPoint>]
 let main argv =
 
@@ -64,34 +67,6 @@ let main argv =
 
     execute program1
 
-    // for _ in [1..5] do
-    //     for col in [Color.Red; Color.Green; Color.Blue] do
-    //         Position.All
-    //         |> List.sortBy posToLedNumber
-    //         |> List.map (fun pos -> createPixelOn col pos)
-    //         |> List.iter (fun pix -> 
-    //             display [pix]
-    //             sleep 50)
-
-    
-
-    // display [ redNose; greenEyeL; greenEyeR ]
-    // sleep 1000
-    // display [ redNose; greenEyeL; greenEyeR; topMiddle ]
-    // sleep 1000
-    // display [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; ]
-    // sleep 1000
-    // display [ redNose; greenEyeL; greenEyeR; topMiddle; midMiddle; bottomMiddle; ]
-    // sleep 1000
-
-    // let allPink = createAllOn Color.HotPink
-    
-    // for _ in 1..5 do
-    //     display allPink
-    //     sleep 500
-    //     display allOff
-    //     sleep 500
-
     let red = 
         [ LeftEye; RightEye; Nose]
         |> createPixels Color.Red
@@ -121,6 +96,42 @@ let main argv =
     ]
     
     execute trafficLights
+
+    let colorWipe col = 
+        Position.All
+        |> List.sortBy posToLedNumber
+        |> List.collect (fun pos -> 
+            [ SetAndDisplayLeds (createPixels col [pos])
+              Sleep 50 ])
+              
+    let colorWipeProgram = [
+        for _ in [1..5] do
+            for col in [ Color.Red; Color.Green; Color.Blue; ] do
+                yield! colorWipe col
+    ]
+
+    execute colorWipeProgram
+
+    let theater times col = [
+        for _ in [1..times] do
+            for q in [0..2] do
+                for i in [0..3..NumberOfLeds-1] do
+                    SetLed { Position = ledNumberToPos (i + q); Color = col }
+                Display
+                Sleep 100
+                for i in [0..3..NumberOfLeds-1] do
+                    SetLed { Position = ledNumberToPos (i + q); Color = Color.Black }
+    ]
+    
+    let theaterProgram =
+        [ color 127 127 127 //White
+          color 127 0 0     //Red
+          color 0 0 127     //Blue
+        ]
+        |> List.collect (fun col -> theater 10 col)
+
+    execute theaterProgram
+
 
     //TODO: Test "Real" with examples
     //TODO: List comprehension examples

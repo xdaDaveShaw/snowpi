@@ -74,6 +74,7 @@ let private render () =
 
 let rec private executeCmd cmd = 
     match cmd with
+    | SetLed p -> setLeds [p]
     | SetLeds ps -> setLeds ps
     | Display -> render ()
     | SetAndDisplayLeds ps -> 
