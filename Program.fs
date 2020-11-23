@@ -120,11 +120,10 @@ let main argv =
     
     execute trafficLights
 
-    //TODO: Change to "Commands"
+    //TODO: Change Real to"Commands"
     //TODO: Test "Real" with examples
     //TODO: Allow HTTP driven control
     //TODO: Cli switches
     //TODO: .NET 5 / Single Exe?
-    //BUG: Console colors are changed after running all the above traffic lights.
 
     0
