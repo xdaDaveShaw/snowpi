@@ -2,35 +2,41 @@
 
 open LEDs
 
-let mutable useReal = false
-let mutable useMock = false
+type Config = {
+    UseSnowpi : bool
+    UseMock   : bool
+}
 
-let setup () = 
-    if useReal then
+let setup config = 
+    if config.UseSnowpi then
         Real.setup ()
-    if useMock then
+    if config.UseMock then
         Mock.setup ()
 
-let execute cmds = 
+let execute config cmds = 
     [ 
-        if useReal then
+        if config.UseSnowpi then
             Real.execute
-        if useMock then
+        if config.UseMock then
             Mock.execute
     ]
     |> List.iter (fun f -> f cmds)
 
-let color r g b = 
-    Color.FromArgb(r, g, b)
+let createConfigFromArgs args = 
+    { UseSnowpi = args |> Array.contains("-r")
+      UseMock = args |> Array.contains("-m") }
 
 [<EntryPoint>]
 let main argv =
 
-    useReal <- argv |> Array.contains("-r")
-    useMock <- argv |> Array.contains("-m")
-
+    let config = createConfigFromArgs argv
+    
     //Warmup Code
-    setup ()
+    setup config
+
+    //partially apply execute with the config
+    let execute = execute config
+
 
     //Programs
 
@@ -80,7 +86,7 @@ let main argv =
 
     let green = 
         [ MiddleLeft; BottomLeft; BottomMiddle; MiddleRight; BottomRight ]
-        |> createPixels Color.Green
+        |> createPixels Color.LimeGreen
 
     let redAmber = 
         List.append red amber
@@ -143,8 +149,8 @@ let main argv =
     execute [ Clear ]
 
     //TODO: Test "Real" with examples
-    //TODO: Clear LED's option
     //TODO: List comprehension examples
+    //TODO: Red and green flipped on the real Pi
     //TODO: Allow HTTP driven control
     //TODO: Cli switches
     //TODO: .NET 5 / Single Exe?
