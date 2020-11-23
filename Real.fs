@@ -13,7 +13,9 @@ let controller =
         false)
 
 let rpi = new WS281x(settings)
-controller.Reset();
+
+let setup() = 
+    controller.Reset();
 
 let private posToLedNumber = function
     | BottomLeft -> 0
@@ -29,8 +31,7 @@ let private posToLedNumber = function
     | RightEye -> 10
     | LeftEye -> 11
 
-let display (pixels : Pixel list) =
-    
+let private setLeds pixels = 
     let toLedTuple pixel =
         match pixel.State with
         | On color -> Some (pixel.Position |> posToLedNumber, color)
@@ -40,4 +41,22 @@ let display (pixels : Pixel list) =
     |> List.choose toLedTuple
     |> List.iter controller.SetLED
 
+let private render() = 
     rpi.Render();
+
+let rec private executeCmd cmd = 
+    match cmd with
+    | SetLeds ps -> setLeds ps
+    | Display -> render()
+    | SetAndDisplayLeds ps -> 
+        executeCmd (SetLeds ps)
+        executeCmd Display
+    | Sleep ms -> System.Threading.Thread.Sleep(ms)
+
+let execute (cmds : Command list) =
+    
+    cmds
+    |> List.iter executeCmd
+
+   
+

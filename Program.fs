@@ -5,13 +5,16 @@ open LEDs
 let useReal = false
 let useMock = true
 
-let sleep (ms : int) =
-    System.Threading.Thread.Sleep(ms)
+let setup () = 
+    if useReal then
+        Real.setup ()
+    if useMock then
+        Mock.setup ()
 
 let execute cmds = 
     [ 
-        // if useReal then
-        //     Real.display
+        if useReal then
+            Real.execute
         if useMock then
             Mock.execute
     ]
@@ -21,8 +24,7 @@ let execute cmds =
 let main argv =
 
     //Warmup Code
-    Mock.setup ()
-
+    setup ()
 
     //Programs
 
@@ -120,7 +122,7 @@ let main argv =
     
     execute trafficLights
 
-    //TODO: Change Real to"Commands"
+    //TODO: Remove "Off" State as it isn't needed.
     //TODO: Test "Real" with examples
     //TODO: Allow HTTP driven control
     //TODO: Cli switches

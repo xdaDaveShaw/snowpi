@@ -81,7 +81,7 @@ let private render () =
 let rec private executeCmd cmd = 
     match cmd with
     | SetLeds ps -> setLeds ps
-    | Display -> render()
+    | Display -> render ()
     | SetAndDisplayLeds ps -> 
         executeCmd (SetLeds ps)
         executeCmd Display
