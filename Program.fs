@@ -150,7 +150,6 @@ let main argv =
 
     //TODO: Test "Real" with examples
     //TODO: List comprehension examples
-    //TODO: Red and green flipped on the real Pi
     //TODO: Allow HTTP driven control
     //TODO: Cli switches
     //TODO: .NET 5 / Single Exe?

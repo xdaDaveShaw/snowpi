@@ -7,11 +7,11 @@ open System.Drawing
 let settings = Settings.CreateDefaultSettings();
 let controller = 
     settings.AddController(
-        ControllerType.PWM0, 
-        NumberOfLeds, 
-        StripType.Unknown, 
-        255uy, 
-        false)
+        controllerType = ControllerType.PWM0, 
+        ledCount = NumberOfLeds, 
+        stripType = StripType.WS2811_STRIP_GRB, 
+        brightness = 255uy, 
+        invert = false)
 
 let rpi = new WS281x(settings)
 
