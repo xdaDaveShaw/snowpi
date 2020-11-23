@@ -20,14 +20,14 @@ type Position =
         |> Seq.map (fun u -> Reflection.FSharpValue.MakeUnion(u, Array.empty) :?> Position)
         |> Seq.toList
 
-type State = 
-    | Off
-    | On of Color
-
 type Pixel = {
     Position: Position
-    State : State
+    Color : Color
 }
+
+let createPixels color positions = 
+    positions
+    |> List.map (fun pos -> { Position = pos; Color = color })
 
 type Command = 
     | SetLeds of Pixel list
@@ -35,24 +35,3 @@ type Command =
     | SetAndDisplayLeds of Pixel list
     | Sleep of int
 
-let createPixels state positions = 
-    positions
-    |> List.map (fun pos -> { Position = pos; State = state; })
-
-let createPixelOn color pos =
-    { Position = pos; State = On color; }
-
-let createPixelsOn color positions = 
-    positions
-    |> List.map (fun pos -> createPixelOn color pos)
-
-let createAll state = 
-    Position.All
-    |> createPixels state
-
-let createAllOn color = 
-    Position.All
-    |> createPixelsOn color
-
-let allOff =
-    createAll Off

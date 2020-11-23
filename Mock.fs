@@ -58,15 +58,9 @@ let setLeds pixels =
     toRender.AddRange(pixels)
 
 let private drawLed led =
-
-    let character, color = 
-        match led.State with
-        | On col -> 'X', col
-        | Off -> ' ', Color.Black
-    
     try
         Console.SetCursorPosition (mapPosToConsole led.Position)
-        Console.Write(character, color)
+        Console.Write('X', led.Color)
     finally
         Console.SetCursorPosition originalPos
 

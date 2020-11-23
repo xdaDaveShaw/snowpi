@@ -33,12 +33,10 @@ let private posToLedNumber = function
 
 let private setLeds pixels = 
     let toLedTuple pixel =
-        match pixel.State with
-        | On color -> Some (pixel.Position |> posToLedNumber, color)
-        | Off -> None
+        (pixel.Position |> posToLedNumber, pixel.Color)
 
     pixels
-    |> List.choose toLedTuple
+    |> List.map toLedTuple
     |> List.iter controller.SetLED
 
 let private render() = 

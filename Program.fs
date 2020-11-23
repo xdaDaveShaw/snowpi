@@ -30,22 +30,22 @@ let main argv =
 
     let redNose = 
         { Position = Nose 
-          State = On Color.Red }
+          Color = Color.Red }
     let greenEyeL = 
         { Position = LeftEye
-          State = On Color.LimeGreen }
+          Color = Color.LimeGreen }
     let greenEyeR = 
         { Position = RightEye
-          State = On Color.LimeGreen }
+          Color = Color.LimeGreen }
     let topMiddle = 
         { Position = TopMiddle
-          State = On Color.Blue }
+          Color = Color.Blue }
     let midMiddle = 
         { Position = MiddleMiddle
-          State = On Color.Blue }
+          Color = Color.Blue }
     let bottomMiddle = 
         { Position = BottomMiddle
-          State = On Color.Blue }
+          Color = Color.Blue }
 
     let program1 = [
         SetLeds [ redNose; greenEyeL; greenEyeR ]
@@ -94,15 +94,15 @@ let main argv =
 
     let red = 
         [ LeftEye; RightEye; Nose]
-        |> createPixelsOn Color.Red
+        |> createPixels Color.Red
 
     let amber = 
         [ TopLeft; TopMiddle; TopRight; MiddleMiddle ]
-        |> createPixelsOn Color.Orange
+        |> createPixels Color.Orange
 
     let green = 
         [ MiddleLeft; BottomLeft; BottomMiddle; MiddleRight; BottomRight ]
-        |> createPixelsOn Color.Green
+        |> createPixels Color.Green
 
     let redAmber = 
         List.append red amber
@@ -122,7 +122,6 @@ let main argv =
     
     execute trafficLights
 
-    //TODO: Remove "Off" State as it isn't needed.
     //TODO: Test "Real" with examples
     //TODO: Allow HTTP driven control
     //TODO: Cli switches
