@@ -148,10 +148,9 @@ let main argv =
 
     execute [ Clear ]
 
-    //TODO: Test "Real" with examples
-    //TODO: List comprehension examples
-    //TODO: Allow HTTP driven control
-    //TODO: Cli switches
+    //TODO: More "Real" with examples
+    //TODO: Allow HTTP driven control?
+    //TODO: Cli switches for programs?
     //TODO: .NET 5 / Single Exe?
 
     0
