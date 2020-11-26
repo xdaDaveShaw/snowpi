@@ -13,14 +13,16 @@ let setup config =
     if config.UseMock then
         Mock.setup ()
 
-let execute config cmds = 
+let execute config cmds name = 
     [ 
         if config.UseSnowpi then
             Real.execute
         if config.UseMock then
             Mock.execute
     ]
-    |> List.iter (fun f -> f cmds)
+    |> List.iter (fun f -> 
+        printfn "Executing: %s" name
+        f cmds)
 
 let createConfigFromArgs args = 
     { UseSnowpi = args |> Array.contains("-r")
@@ -74,8 +76,6 @@ let main argv =
         Sleep 1000
     ]
 
-    execute program1
-
     let red = 
         [ LeftEye; RightEye; Nose]
         |> createPixels Color.Red
@@ -109,8 +109,6 @@ let main argv =
         Sleep 1000
     ]
     
-    execute trafficLights
-
     let colorWipe col = 
         Position.All
         |> List.sortBy posToLedNumber
@@ -124,33 +122,70 @@ let main argv =
                 yield! colorWipe col
     ]
 
-    execute colorWipeProgram
-
     let theater times col = [
-        for _ in [1..times] do
+        for j in [1..times] do
             for q in [0..2] do
                 for i in [0..3..NumberOfLeds-1] do
-                    SetLed { Position = ledNumberToPos (i + q); Color = col }
+                    SetLed { Position = ledNumberToPos (i + q); Color = col j i }
                 Display
                 Sleep 50
                 for i in [0..3..NumberOfLeds-1] do
                     SetLed { Position = ledNumberToPos (i + q); Color = Color.Black }
     ]
     
-    let theaterProgram =
+    let theaterChaseProgram =
         [ Color.White
           Color.Red
           Color.Blue
         ]
-        |> List.collect (fun col -> theater 10 col)
+        |> List.collect (fun col -> theater 256 (fun _ _ -> col))
 
-    execute theaterProgram
+    let wheel pos = 
+        if pos < 85 then
+            Color.FromArgb(pos * 3, 255 - pos * 3, 0)
+        elif pos < 170 then
+            let pos = pos - 85
+            Color.FromArgb(255 - pos * 3, 0, pos * 3)
+        else
+            let pos = pos - 170
+            Color.FromArgb(0, pos * 3, 255 - pos * 3)
+        
+    let theaterRainbowProgram =
+        theater 255 (fun j i -> wheel ((i + j) % 255))
 
-    execute [ Clear ]
+    let rainbowProgram = [
+        for j in [0..255 * 5] do
+            for i in [0..NumberOfLeds-1] do
+                let colorNumber = (i + j) &&& 255
+                SetLed { Position = ledNumberToPos i; Color = (wheel colorNumber) }
+            Display
+            Sleep 20
+    ]
 
-    //TODO: More "Real" with examples
-    //TODO: Allow HTTP driven control?
+    let rainbowCycleProgram = [
+        for j in [0..255 * 5] do
+            for i in [0..NumberOfLeds-1] do
+                let colorNumber = ((i * 256 / NumberOfLeds) + j) &&& 255
+                SetLed { Position = ledNumberToPos i; Color = (wheel colorNumber) }
+            Display
+            Sleep 10
+    ]
+
+    // Execute programs:
+    execute program1 "program1"
+    execute trafficLights "trafficLights"
+    execute colorWipeProgram "colorWipeProgram"
+    execute theaterChaseProgram "theaterChaseProgram"
+    execute theaterRainbowProgram "theaterRainbowProgram"
+    execute rainbowProgram "rainbowProgram"
+    execute rainbowCycleProgram "rainbowCycleProgram"
+
+    execute [ Clear ] "Clearing all LEDs"
+
     //TODO: Cli switches for programs?
+    //TODO: Other Conosle lib from Scott H?
     //TODO: .NET 5 / Single Exe?
+    //TODO: Investigate poot color range
+    //TODO: Allow HTTP driven control?
 
     0
