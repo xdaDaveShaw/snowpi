@@ -138,7 +138,7 @@ let main argv =
           Color.Red
           Color.Blue
         ]
-        |> List.collect (fun col -> theater 256 (fun _ _ -> col))
+        |> List.collect (fun col -> theater 10 (fun _ _ -> col))
 
     let wheel pos = 
         if pos < 85 then
