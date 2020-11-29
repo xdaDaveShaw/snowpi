@@ -23,8 +23,12 @@ let SnowPiOnPi = "/home/pi/snowpi"
 let ProjectFile = "snowpi.fsproj"
 
 // *** Define Targets ***
-Target.create "Clean" (fun _ ->
-  Trace.log " --- Cleaning stuff --- "
+Target.create "Info" (fun _ ->
+  Trace.log " --- Info --- "
+
+  let version = DotNet.getVersion id
+
+  Trace.log (sprintf "dotnet version in use: %s" version)
 )
 
 Target.create "Restore" (fun _ ->
@@ -40,14 +44,26 @@ Target.create "Build" (fun _ ->
   DotNet.build id ProjectFile
 )
 
+Target.create "CleanPublish" (fun _ ->
+  Trace.log " --- Cleaning Publish --- "
+
+  Fake.IO.Directory.delete "publish"
+
+)
+
 Target.create "Publish" (fun _ ->
   Trace.log " --- Publishing app --- "
+
+  let opt = 
+    DotNet.Options.Create()
+    |> DotNet.Options.withCustomParams (Some "-p:PublishSingleFile=true -p:PublishTrimmed=true")
 
   DotNet.publish (fun args -> 
     { args with
        OutputPath = Some "publish"
        Runtime = Some "linux-arm"
-       SelfContained = Some true }) ProjectFile
+       SelfContained = Some true
+       Common = opt }) ProjectFile
 )
 
 Target.create "Deploy" (fun _ ->
@@ -78,9 +94,10 @@ Target.create "Deploy" (fun _ ->
 open Fake.Core.TargetOperators
 
 // *** Define Dependencies ***
-"Clean"
+"Info"
   ==> "Restore"
   ==> "Build"
+  ==> "CleanPublish"
   ==> "Publish"
   ==> "Deploy"
 
