@@ -29,14 +29,20 @@ let Snowman = """
 """
 
 let mutable private originalPos = (0, 0)
+let mutable private originalColor = Color.Empty
 
 let private drawSnowman () =
-    Console.Clear()
+    Console.SetCursorPosition(0, 0)
     Console.WriteLine(Snowman, Color.White)
 
 let setup () =
+    originalColor <- Console.ForegroundColor
+    Console.Clear()
     drawSnowman ()
     originalPos <- Console.CursorLeft, Console.CursorTop
+
+let teardown () = 
+    Console.ForegroundColor <- originalColor
 
 let private mapPosToConsole = function
     | TopLeft -> 6, 14
@@ -54,20 +60,18 @@ let private mapPosToConsole = function
 
 let private toRender = ResizeArray<Pixel>()
 
-let setLeds pixels = 
+let private setLeds pixels = 
     toRender.AddRange(pixels)
 
 let private drawLed led =
-    try
-        Console.SetCursorPosition (mapPosToConsole led.Position)
-        Console.Write('X', led.Color)
-    finally
-        Console.SetCursorPosition originalPos
+    Console.SetCursorPosition (mapPosToConsole led.Position)
+    Console.Write('X', led.Color)
 
 let private render () = 
-    
-    toRender
-    |> Seq.iter drawLed
+    try
+        Seq.iter drawLed toRender
+    finally
+        Console.SetCursorPosition originalPos
 
     toRender.Clear()
 

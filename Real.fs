@@ -18,19 +18,23 @@ let rpi = new WS281x(settings)
 let setup() = 
     controller.Reset();
 
+let teardown() =
+    rpi.Dispose()
+
 let private setLeds pixels = 
     let toLedTuple pixel =
-        (pixel.Position |> posToLedNumber, pixel.Color)
+       (posToLedNumber pixel.Position, 
+        pixel.Color)
 
     pixels
     |> List.map toLedTuple
     |> List.iter controller.SetLED
 
 let private render() = 
-    rpi.Render();
+    rpi.Render()
 
 let private clear () =
-    controller.SetAll(Color.Black)
+    controller.SetAll(Color.Empty)
     render ()
 
 let rec private executeCmd cmd = 

@@ -26,8 +26,14 @@ let execute config cmds name =
             Mock.execute
     ]
     |> List.iter (fun f -> 
-        printfn "Executing: %s" name
+        Colorful.Console.WriteLine((sprintf "Executing: %s" name), Color.White)
         f cmds)
+
+let teardown config =
+    if config.UseSnowpi then
+        Real.teardown ()
+    if config.UseMock then
+        Mock.teardown ()
 
 let createConfigFromArgs args = 
     let has switch = Array.contains switch args
@@ -70,19 +76,6 @@ let validateConfig config =
 
 [<EntryPoint>]
 let main argv =
-
-    let config = createConfigFromArgs argv
-    
-    let validConfig = validateConfig config
-    if not validConfig then
-        exit -1
-
-    //Warmup Code
-    setup config
-
-    //partially apply execute with the config
-    let execute = execute config
-
 
     //Programs
 
@@ -174,7 +167,7 @@ let main argv =
                 Display
                 Sleep 50
                 for i in [0..3..NumberOfLeds-1] do
-                    SetLed { Position = ledNumberToPos (i + q); Color = Color.Black }
+                    SetLed { Position = ledNumberToPos (i + q); Color = Color.Empty }
     ]
     
     let theaterChaseProgram =
@@ -215,25 +208,40 @@ let main argv =
             Sleep 10
     ]
 
-    // Execute programs:
 
-    let rec loop () = 
-        if config.ExecSimple then
-            execute simpleProgram "simpleProgram"
-        if config.ExecTraffic then
-            execute trafficLights "trafficLights"
-        if config.ExecWipe then
-            execute colorWipeProgram "colorWipeProgram"
-        if config.ExecTheater then
-            execute theaterChaseProgram "theaterChaseProgram"
-            execute theaterRainbowProgram "theaterRainbowProgram"
-        if config.ExecRainbow then
-            execute rainbowProgram "rainbowProgram"
-            execute rainbowCycleProgram "rainbowCycleProgram"
+    // Get the config from the CLI
+    let config = createConfigFromArgs argv
+
+    // Validate that a progam and mode have been selected
+    let validConfig = validateConfig config
+    if not validConfig then
+        exit -1
+    
+    // Setup the Snowpi / Console
+    setup config
 
     try
-        loop()
-    finally 
-        execute [ Clear ] "Clearing all LEDs"
+        // Partially apply execute with the config
+        let execute = execute config
+
+        // Run the programs, then clear the LEDs
+        try
+            if config.ExecSimple then
+                execute simpleProgram "simpleProgram"
+            if config.ExecTraffic then
+                execute trafficLights "trafficLights"
+            if config.ExecWipe then
+                execute colorWipeProgram "colorWipeProgram"
+            if config.ExecTheater then
+                execute theaterChaseProgram "theaterChaseProgram"
+                execute theaterRainbowProgram "theaterRainbowProgram"
+            if config.ExecRainbow then
+                execute rainbowProgram "rainbowProgram"
+                execute rainbowCycleProgram "rainbowCycleProgram" 
+        finally 
+            execute [ Clear ] "Clearing all LEDs"
+
+    finally
+        teardown config
 
     0
