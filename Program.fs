@@ -236,7 +236,6 @@ let main argv =
     finally 
         execute [ Clear ] "Clearing all LEDs"
 
-    //TODO: Other Conosle lib from Scott H?
     //TODO: .NET 5 / Single Exe?
     //TODO: Investigate poot color range
     //TODO: Allow HTTP driven control?
