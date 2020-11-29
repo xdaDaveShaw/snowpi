@@ -5,6 +5,11 @@ open LEDs
 type Config = {
     UseSnowpi : bool
     UseMock   : bool
+    ExecSimple : bool
+    ExecTraffic : bool
+    ExecWipe : bool
+    ExecTheater : bool
+    ExecRainbow : bool
 }
 
 let setup config = 
@@ -25,14 +30,53 @@ let execute config cmds name =
         f cmds)
 
 let createConfigFromArgs args = 
-    { UseSnowpi = args |> Array.contains("-r")
-      UseMock = args |> Array.contains("-m") }
+    let has switch = Array.contains switch args
+    let hasProg switch = has "-a" || has switch
+
+    { UseSnowpi = has "-r"
+      UseMock = has "-m"
+      ExecSimple = hasProg "-ps"
+      ExecTraffic = hasProg "-pl"
+      ExecWipe = hasProg "-pw"
+      ExecTheater = hasProg "-pt" 
+      ExecRainbow = hasProg "-pr" }
+
+let validateConfig config = 
+    if not config.UseMock && not config.UseSnowpi then
+        printfn ""
+        printfn "Invalid mode, you must pass either -m or -r."
+        printfn ""
+        printfn " -m : Use Console output"
+        printfn " -r : Use Snowpi output"
+        printfn ""
+        false
+    elif not config.ExecSimple &&
+         not config.ExecTraffic &&
+         not config.ExecWipe &&
+         not config.ExecTheater &&
+         not config.ExecRainbow then
+            printfn ""
+            printfn "No program specified."
+            printfn ""
+            printfn " -a  : Run all programs"
+            printfn " -ps : Run the simple program"
+            printfn " -pl : Run the traffic lights program"
+            printfn " -pw : Run the colour wipe program"
+            printfn " -pt : Run the theater programs"
+            printfn " -pr : Run the rainbow programs"
+            false
+    else
+        true
 
 [<EntryPoint>]
 let main argv =
 
     let config = createConfigFromArgs argv
     
+    let validConfig = validateConfig config
+    if not validConfig then
+        exit -1
+
     //Warmup Code
     setup config
 
@@ -61,7 +105,7 @@ let main argv =
         { Position = BottomMiddle
           Color = Color.Blue }
 
-    let program1 = [
+    let simpleProgram = [
         SetLeds [ redNose; greenEyeL; greenEyeR ]
         Display
         Sleep 1000
@@ -172,17 +216,26 @@ let main argv =
     ]
 
     // Execute programs:
-    execute program1 "program1"
-    execute trafficLights "trafficLights"
-    execute colorWipeProgram "colorWipeProgram"
-    execute theaterChaseProgram "theaterChaseProgram"
-    execute theaterRainbowProgram "theaterRainbowProgram"
-    execute rainbowProgram "rainbowProgram"
-    execute rainbowCycleProgram "rainbowCycleProgram"
 
-    execute [ Clear ] "Clearing all LEDs"
+    let rec loop () = 
+        if config.ExecSimple then
+            execute simpleProgram "simpleProgram"
+        if config.ExecTraffic then
+            execute trafficLights "trafficLights"
+        if config.ExecWipe then
+            execute colorWipeProgram "colorWipeProgram"
+        if config.ExecTheater then
+            execute theaterChaseProgram "theaterChaseProgram"
+            execute theaterRainbowProgram "theaterRainbowProgram"
+        if config.ExecRainbow then
+            execute rainbowProgram "rainbowProgram"
+            execute rainbowCycleProgram "rainbowCycleProgram"
 
-    //TODO: Cli switches for programs?
+    try
+        loop()
+    finally 
+        execute [ Clear ] "Clearing all LEDs"
+
     //TODO: Other Conosle lib from Scott H?
     //TODO: .NET 5 / Single Exe?
     //TODO: Investigate poot color range

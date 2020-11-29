@@ -1,1 +1,1 @@
-start cmd /c "dotnet watch run -- -m" 
+start cmd /c "dotnet watch run -- -m -a" 
