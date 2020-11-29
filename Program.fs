@@ -236,7 +236,4 @@ let main argv =
     finally 
         execute [ Clear ] "Clearing all LEDs"
 
-    //TODO: Investigate poot color range
-    //TODO: Allow HTTP driven control?
-
     0
