@@ -62,7 +62,10 @@ let validateConfig config =
          not config.ExecTheater &&
          not config.ExecRainbow then
             printfn ""
-            printfn "No program specified."
+            printfn "No program specified. Pass one or more of the following after the mode:"
+            printfn "e.g."
+            printfn " snowpi -r -a"
+            printfn " snowpi -r -ps -pl"
             printfn ""
             printfn " -a  : Run all programs"
             printfn " -ps : Run the simple program"
