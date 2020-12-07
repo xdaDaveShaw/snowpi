@@ -1,3 +1,1 @@
-  dotnet tool restore
-
-  fake run build.fsx --target Deploy
+fake run build.fsx --target Deploy

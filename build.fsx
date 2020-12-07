@@ -35,7 +35,8 @@ Target.create "Restore" (fun _ ->
   
   Trace.log " --- Paket Restore --- "
 
-  Paket.restore id
+  DotNet.exec id "paket" "restore"
+  |> ignore
 )
 
 Target.create "Build" (fun _ ->
@@ -70,7 +71,7 @@ Target.create "Deploy" (fun _ ->
   Trace.log " --- Deploying app --- "
 
   CreateProcess.fromRawCommand 
-    "scp.exe" 
+    "scp" 
     [ "-rp"
       "-i"
       SshKeyFile
@@ -82,7 +83,7 @@ Target.create "Deploy" (fun _ ->
   Trace.log " --- Making app executable --- "
 
   CreateProcess.fromRawCommand
-    "ssh.exe"
+    "ssh"
     [ "-i"
       SshKeyFile
       PiLogin
