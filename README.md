@@ -1,21 +1,59 @@
-# SnowPi
+# SnowPi RGB
 
-More details to come...
+Programming the [SnowPi RGB](https://snowpi.xyz/) in F# and .NET 5.
 
-Part of the F# Advent Calendar 2020.
+![Snowpi](https://cdn.shopify.com/s/files/1/0446/2143/0938/products/snowmanOnPi_1000x1500.jpg?v=1596114774)
+
+This is my contribution to the F# Advent Calendar 2020.
 
 < BLOG POST LINK HERE >
 
+## About
+
+Using this application you can write and test programs to run on the SnowPi RGB.
+
+Testing is done by launching the application in Console mode where it will draw `X` to the console.
+
+## OS Note
+
+I developed this on Windows and run it on Raspberry Pi - I did not develop on the RPi.
+
+I've used `fake` as the main build infrastructure, and tried to keep it generally OS agnostic
+but I may have failed somewhere (probably the deployment stuff).
+
+The `cmd` scripts I recommend below are just helpers to save me remembering all the args
+and typing them, you should be able to run the commands from inside them on *Nix.
+
+If you find a problem, please submit a PR.
+
 ## Building
 
-How do I build / work on this
+To compile the application just run `build.cmd`.
+
+This should restore the .NET Tools:
+
+- Fake
+- Paket
+
+Then run Fake to actually compile the app.
+
+### Console Testing
+
+To test in console mode you can use `run.cmd`.
+
+This launches a new `cmd` prompt on Windows because that has the default colours,
+whereas my Windows Terminal is customised.
 
 ## Deploying / Installing
 
 Where do I get the magic native lib from?
 Where do I put the magic lib?
 
-How do I deploy to an RPi?
+### Deploying to RPi
+
+### Running on RPi
+
+## Contributing
 
 ## Credits
 
