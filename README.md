@@ -46,14 +46,74 @@ whereas my Windows Terminal is customised.
 
 ## Deploying / Installing
 
-Where do I get the magic native lib from?
-Where do I put the magic lib?
+To get this working on a RPi you need a native library.
+
+This was the hardest bit of this whole project.
+
+I recommend the "Building the Native Library" approach from
+[here](https://github.com/kenssamson/rpi-ws281x-csharp/tree/master/lib#building-the-native-library) (copied below); it is the only one
+that worked on my RPi and isn't too much work.
+
+```sh
+sudo apt install build-essential git scons
+git clone https://github.com/jgarff/rpi_ws281x.git
+cd rpi_ws281x
+scons
+gcc -shared -o ws2811.so *.o
+sudo cp ws2811.so /usr/lib
+```
 
 ### Deploying to RPi
 
+To deploy the build application to your Raspberry Pi you can either try and use the
+automatic deployment in the Fake script, or you can just SCP it over yourself.
+
+#### Manual SCP
+
+If you don't want to use the Fake script to deploy you can get it to publish the file...
+
+```cmd
+dotnet fake run build.fsx --target Publish
+```
+
+then copy it from the `publish` folder using SCP.
+
+Once you SCP the file over to the RPi you need to `chmod +x` the file to make it
+executable.
+
+#### Automatic Fake
+
+If you want to try the Fake script, just run `deploy.cmd`
+
+The Fake script is set to my personal setup:
+
+- For my RPi I have a separate private key called `pi_rsa`.
+- My login is `pi`
+- My RPi's hostname is `raspberrypi`
+
+You can tweak all these in the build.fsx.
+
 ### Running on RPi
 
+If you used the Fake deployment the file will be in `~/snowpi/publish/`.
+
+You need to use `sudo` to run the application because of the native libs:
+
+```sh
+# Simple program
+sudo ./snowpi -r -ps
+
+# All programs
+sudo ./snowpi -r -a
+```
+
 ## Contributing
+
+What can you contrib?
+
+F#
+XPlat
+Programs
 
 ## Credits
 
