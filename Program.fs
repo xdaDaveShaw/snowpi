@@ -149,9 +149,11 @@ let main argv =
     let colorWipe col = 
         Position.All
         |> List.sortBy posToLedNumber
-        |> List.collect (fun pos -> 
-            [ SetAndDisplayLeds (createPixels col [pos])
-              Sleep 50 ])
+        |> List.collect (
+            fun pos -> 
+                [ SetLed { Position = pos; Color = col }
+                  Display
+                  Sleep 50 ])
               
     let colorWipeProgram = [
         for _ in [1..5] do
