@@ -6,7 +6,7 @@ Programming the [SnowPi RGB](https://snowpi.xyz/) in F# and .NET 5.
 
 This is my contribution to the F# Advent Calendar 2020.
 
-< BLOG POST LINK HERE >
+More details in this [blog post](https://taeguk.co.uk/blog/snowpi-in-fsharp/).
 
 ## About
 
